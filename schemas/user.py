@@ -8,6 +8,7 @@ class UserBase(BaseModel):
     is_superuser: bool = False
     first_name: str = None
     last_name: str = None
+    role_id: int = None
 
 class User(UserBase):
     id: int
