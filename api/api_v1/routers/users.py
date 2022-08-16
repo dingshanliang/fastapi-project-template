@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, Response, Depends, Request
 
 from core.auth import get_current_active_superuser, get_current_active_user
-from db.db_crud import get_users, get_user, create_user, edit_user, delete_user
+from db.crud.user import get_users, get_user, create_user, edit_user, delete_user
 from db.session import get_db
 from schemas.user import User, UserCreate, UserEdit
 

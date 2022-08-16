@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 
 from api.api_v1.routers.auth import auth_router
+from api.api_v1.routers.roles import roles_router
 from api.api_v1.routers.users import users_router
 from core import config
 from core.auth import get_current_active_user
@@ -51,6 +52,12 @@ app.include_router(
     users_router,
     prefix="/api/v1",
     tags=["users"],
+    dependencies=[Depends(get_current_active_user)],
+)
+app.include_router(
+    roles_router,
+    prefix="/api/v1",
+    tags=["roles"],
     dependencies=[Depends(get_current_active_user)],
 )
 app.include_router(

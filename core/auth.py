@@ -3,7 +3,7 @@ import jwt
 from jwt import PyJWTError
 
 from core.security import SECRET_KEY, ALGORITHM, verify_password, oauth2_scheme
-from db.db_crud import get_user_by_email, create_user
+from db.crud.user import get_user_by_email, create_user
 from db.session import get_db
 from models.user import User
 from schemas.token import TokenData
