@@ -1,13 +1,11 @@
 from typing import List
+
 from fastapi import APIRouter, Response, Depends, Request
 
 import schemas.role
-from core.auth import get_current_active_superuser, get_current_active_user
-import db.crud.role
-from db.crud.role import get_role,get_roles,create_role,edit_role,delete_role
-from db.crud.user import get_users, get_user, create_user, edit_user, delete_user
+from core.auth import get_current_active_superuser
+from db.crud import crud_role
 from db.session import get_db
-from schemas.user import User, UserCreate, UserEdit
 
 roles_router = r = APIRouter()
 
@@ -19,11 +17,11 @@ roles_router = r = APIRouter()
     response_model_exclude_none=True,
 )
 def roles_list(request: Request,
-        response: Response,
-        db=Depends(get_db),
-        current_user=Depends(get_current_active_superuser),
-):
-    roles = get_roles(db)
+               response: Response,
+               db=Depends(get_db),
+               current_user=Depends(get_current_active_superuser),
+               ):
+    roles = crud_role.role.get_multi(db)
     return roles
 
 
@@ -35,7 +33,7 @@ def role_details(
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    role = get_role(db, role_id)
+    role = crud_role.role.get(db, role_id)
     return role
 
 
@@ -47,7 +45,7 @@ def role_create(
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    return create_role(db, role)
+    return crud_role.role.create(db, role)
 
 
 # 更新信息
@@ -55,11 +53,11 @@ def role_create(
 def role_edit(
         request: Request,
         role_id: int,
-        role: schemas.role.RoleEdit,
+        role: schemas.role.RoleUpdate,
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    return edit_role(db, role_id, role)
+    return crud_role.role.update(db, role_id, role)
 
 
 # 删除角色
@@ -70,4 +68,4 @@ def role_delete(
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    return delete_role(db, role_id)
+    return crud_role.role.delete(db, role_id)

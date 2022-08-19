@@ -19,7 +19,7 @@ class User(UserBase):
 class UserOut(UserBase):
     pass
 
-class UserEdit(UserBase):
+class UserUpdate(UserBase):
     password: Optional[str] = None
 
     class Config:

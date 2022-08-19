@@ -12,6 +12,7 @@ class RoleCreate(RoleBase):
     class Config:
         orm_mode = True
 
-class RoleEdit(RoleBase):
+class RoleUpdate(RoleBase):
     class Config:
         orm_mode = True
+

@@ -2,10 +2,9 @@ from typing import List
 from fastapi import APIRouter, Response, Depends, Request
 
 from core.auth import get_current_active_superuser, get_current_active_user
-from db.crud.user import get_users, get_user, create_user, edit_user, delete_user
 from db.session import get_db
-from schemas.user import User, UserCreate, UserEdit
-
+from schemas.user import User, UserCreate, UserUpdate
+from db.crud import crud_user
 users_router = r = APIRouter()
 
 
@@ -20,7 +19,7 @@ def users_list(
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    users = get_users(db)
+    users = crud_user.user.get_multi(db)
 
     response.headers["Content-Range"] = f"0-9/{len(users)}"
     return users
@@ -40,19 +39,18 @@ def user_details(
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    user = get_user(db, user_id)
+    user = crud_user.user.get(db, user_id)
     return user
 
 
 # 创建新用户
 @r.post('/users', response_model=User, response_model_exclude_none=True)
 def user_create(
-        request: Request,
         user: UserCreate,
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    return create_user(db, user)
+    return crud_user.user.create(db, user)
 
 
 # 更新用户信息
@@ -60,11 +58,11 @@ def user_create(
 def user_edit(
         request: Request,
         user_id: int,
-        user: UserEdit,
+        user: UserUpdate,
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    return edit_user(db, user_id, user)
+    return crud_user.user.update(db, user_id, user)
 
 
 # 删除用户
@@ -75,4 +73,4 @@ def user_delete(
         db=Depends(get_db),
         current_user=Depends(get_current_active_superuser),
 ):
-    return delete_user(db, user_id)
+    return crud_user.user.delete(db, user_id)

@@ -3,11 +3,11 @@ import jwt
 from jwt import PyJWTError
 
 from core.security import SECRET_KEY, ALGORITHM, verify_password, oauth2_scheme
-from db.crud.user import get_user_by_email, create_user
 from db.session import get_db
 from models.user import User
 from schemas.token import TokenData
 from schemas.user import UserCreate
+from db.crud import crud_user
 
 
 def get_current_user(
@@ -29,7 +29,7 @@ def get_current_user(
         token_data = TokenData(email=email, permissions=permissions)
     except PyJWTError:
         raise credentials_exception
-    user = get_user_by_email(db, token_data.email)
+    user = crud_user.user.get_by_email(db, token_data.email)
     if user is None:
         raise credentials_exception
     return user
@@ -55,7 +55,7 @@ def get_current_active_superuser(
 
 
 def authenticate_user(db, email: str, password: str):
-    user = get_user_by_email(db, email)
+    user = crud_user.user.get_by_email(db, email)
     if not user:
         return False  # user not exist
     if not verify_password(password, user.hashed_password):
@@ -64,16 +64,18 @@ def authenticate_user(db, email: str, password: str):
 
 
 def sign_up_new_user(db, email: str, password: str):
-    user = get_user_by_email(db, email)
-    if user:
-        return False  # user already exists
-    new_user = create_user(
-        db,
-        UserCreate(
-            email=email,
-            password=password,
-            is_active=True,
-            is_superuer=False,
-        ),
-    )
-    return new_user
+    try:
+        user = crud_user.user.get_by_email(db, email)
+        if user:
+            return False  # user already exists
+    except HTTPException:
+        new_user = crud_user.user.create(
+            db,
+            UserCreate(
+                email=email,
+                password=password,
+                is_active=True,
+                is_superuer=False,
+            ),
+        )
+        return new_user
