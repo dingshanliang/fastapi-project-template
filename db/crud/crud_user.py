@@ -7,6 +7,7 @@ from starlette import status
 
 from core.security import get_password_hash
 from db.crud.base import CRUDBase
+from models.role import Role
 from models.user import User
 from schemas.user import UserCreate, UserUpdate
 
@@ -45,6 +46,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         user_data = jsonable_encoder(user)
         db_user = self.model(**user_data)
         return db_user
+
 
 user = CRUDUser(User)
 

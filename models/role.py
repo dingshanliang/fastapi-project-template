@@ -6,4 +6,5 @@ class Role(Base):
     __tablename__ = 'roles'
 
     id = Column(Integer, primary_key=True, nullable=False, index=True)
-    role_name = Column(String(255), nullable=False, index=True)
+    role_code = Column(String(255), nullable=False, index=True)
+    role_name = Column(String(255), nullable=False)

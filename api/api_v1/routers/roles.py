@@ -19,7 +19,6 @@ roles_router = r = APIRouter()
 def roles_list(request: Request,
                response: Response,
                db=Depends(get_db),
-               current_user=Depends(get_current_active_superuser),
                ):
     roles = crud_role.role.get_multi(db)
     return roles
@@ -31,7 +30,6 @@ def role_details(
         request: Request,
         role_id: int,
         db=Depends(get_db),
-        current_user=Depends(get_current_active_superuser),
 ):
     role = crud_role.role.get(db, role_id)
     return role
@@ -43,7 +41,6 @@ def role_create(
         request: Request,
         role: schemas.role.RoleCreate,
         db=Depends(get_db),
-        current_user=Depends(get_current_active_superuser),
 ):
     return crud_role.role.create(db, role)
 
@@ -55,7 +52,6 @@ def role_edit(
         role_id: int,
         role: schemas.role.RoleUpdate,
         db=Depends(get_db),
-        current_user=Depends(get_current_active_superuser),
 ):
     return crud_role.role.update(db, role_id, role)
 
@@ -66,6 +62,5 @@ def role_delete(
         request: Request,
         role_id: int,
         db=Depends(get_db),
-        current_user=Depends(get_current_active_superuser),
 ):
     return crud_role.role.delete(db, role_id)

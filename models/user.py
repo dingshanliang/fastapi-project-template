@@ -1,6 +1,16 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, Table, ForeignKey
+from sqlalchemy.orm import relationship
 
 from db.session import Base
+
+
+association_table = Table(
+    "user_role", # 表名
+    Base.metadata,
+    Column("user_id", ForeignKey("users.id"), primary_key=True),
+    Column("role_id", ForeignKey("roles.id"), primary_key=True)
+
+)
 
 
 class User(Base):
@@ -13,4 +23,5 @@ class User(Base):
     hashed_password = Column(String(255),nullable=False)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
-    role_id = Column(Integer, default=None)
+    # role_id = Column(Integer, default=None)
+    roles = relationship("Role", secondary=association_table, backref="users")

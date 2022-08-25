@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
 class UserBase(BaseModel):
@@ -8,7 +8,8 @@ class UserBase(BaseModel):
     is_superuser: bool = False
     first_name: str = None
     last_name: str = None
-    role_id: int = None
+    # role_id: int = None
+    # roles: List[str] = []
 
 class User(UserBase):
     id: int
@@ -17,7 +18,9 @@ class User(UserBase):
         orm_mode = True
 
 class UserOut(UserBase):
-    pass
+
+    class Config:
+        orm_mode = True
 
 class UserUpdate(UserBase):
     password: Optional[str] = None

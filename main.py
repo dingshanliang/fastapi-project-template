@@ -5,9 +5,10 @@ from starlette.requests import Request
 
 from api.api_v1.routers.auth import auth_router
 from api.api_v1.routers.roles import roles_router
+from api.api_v1.routers.user_role import user_role_router
 from api.api_v1.routers.users import users_router
 from core import config
-from core.auth import get_current_active_user
+from core.auth import get_current_active_user, get_current_active_superuser
 from db.session import SessionLocal, engine, Base
 import tasks
 
@@ -58,12 +59,18 @@ app.include_router(
     roles_router,
     prefix="/api/v1",
     tags=["roles"],
-    dependencies=[Depends(get_current_active_user)],
+    dependencies=[Depends(get_current_active_superuser)],
 )
 app.include_router(
     auth_router,
     prefix="/api",
     tags=["auth"],
+)
+app.include_router(
+    user_role_router,
+    prefix="/api/v1",
+    tags=["user_role"],
+    dependencies=[Depends(get_current_active_superuser)]
 )
 
 # import uvicorn
